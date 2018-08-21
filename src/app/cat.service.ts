@@ -36,4 +36,9 @@ export class CatService {
 
     return this.http.get(url);
   }
+
+  get_product_details(productId):Observable<any>{
+    let url = `http://localhost:3000/products/${productId}`;
+    return this.http.get(url);
+  }
 }

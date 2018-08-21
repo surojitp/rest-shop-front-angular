@@ -6,6 +6,7 @@ import { HomeComponent } from './home/home.component';
 
 import {ProductTemplateComponent} from './product/product-template/product-template.component';
 import {ProductListingComponent} from './product/product-listing/product-listing.component';
+import {DetailsComponent} from './product/details/details.component';
 
 import { ReactiveFormsModule } from '@angular/forms';
 var routes: Routes = [
@@ -23,7 +24,12 @@ var routes: Routes = [
             {
               path:"sub/:subcategoryId",
               component:ProductListingComponent
+            },
+            {
+              path:"details/:productId",
+              component:DetailsComponent
             }
+
 
     ]
   }

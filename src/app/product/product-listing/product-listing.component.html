@@ -1,12 +1,12 @@
 <div class="span9">	
-  <h1>{{productData.length}}</h1>							
+  						
   <ul *ngIf= "productData.length !== '0'" class="thumbnails listing-products">
     
     <li *ngFor="let product of productData" class="span3">
       <div class="product-box">
         <span class="sale_tag"></span>												
-        <a href="product_detail.html"><img alt="" src="http://localhost:3000/{{product.productImage}}"></a><br/>
-        <a href="product_detail.html" class="title">{{product.name}}</a><br/>
+        <a [routerLink]='["/product/details",product.id]'><img alt="" src="http://localhost:3000/{{product.productImage}}"></a><br/>
+        <a routerLink="product/details/{{product._id}}" class="title">{{product.name}}{{product.id}}</a><br/>
         <a href="#" class="category">Phasellus consequat</a>
         <p class="price">${{product.price}}</p>
       </div>
