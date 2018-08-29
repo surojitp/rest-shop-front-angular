@@ -17,6 +17,13 @@ import { DetailsComponent } from './product/details/details.component';
 import { ProductTemplateComponent } from './product/product-template/product-template.component';
 import { ProductRightSideComponent } from './product/product-right-side/product-right-side.component';
 
+import {CookieService} from 'ngx-cookie-service';
+import {FormControl,FormsModule,ReactiveFormsModule} from '@angular/forms';
+import { CartComponent } from './product/cart/cart.component';
+import { LoginRegisterComponent } from './login-register/login-register.component';
+import { LoginComponent } from './login-register/login/login.component';
+import { RegisterComponent } from './login-register/register/register.component'
+
 
 @NgModule({
   declarations: [
@@ -32,15 +39,21 @@ import { ProductRightSideComponent } from './product/product-right-side/product-
     ProductListingComponent,
     DetailsComponent,
     ProductTemplateComponent,
-    ProductRightSideComponent
+    ProductRightSideComponent,
+    CartComponent,
+    LoginRegisterComponent,
+    LoginComponent,
+    RegisterComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     HttpModule,
-    HttpClientModule
+    HttpClientModule,
+    FormsModule,
+    ReactiveFormsModule
   ],
-  providers: [],
+  providers: [CookieService],
   bootstrap: [AppComponent,Header1Component]
 })
 export class AppModule { }

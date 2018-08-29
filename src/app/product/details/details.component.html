@@ -36,9 +36,14 @@
           <input type="checkbox" value=""> Be sure to include why it's great
         </label>
         <p>&nbsp;</p>
+        <label>Color:</label>
+        <select style="width: auto;" name="color" #clr [(ngModel)]="selectedColor">
+          <option value="">Select Color</option>
+          <option *ngFor="let c of color;let i = index">{{c}}</option>
+        </select>&nbsp;
         <label>Qty:</label>
-        <input type="text" class="span1" placeholder="1">
-        <button class="btn btn-inverse" type="submit">Add to cart</button>
+        <input type="text" class="span1" placeholder="1" #qty [(ngModel)]='quantity' name="qty2">&nbsp;&nbsp;
+        <span class="btn btn-inverse" (click)="add_to_cart(qty.value,productId,clr.value,productDetails.price,productDetails.productImage,productDetails.name)">Add to cart</span>
       </form>
     </div>							
   </div>

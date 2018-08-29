@@ -7,6 +7,10 @@ import { HomeComponent } from './home/home.component';
 import {ProductTemplateComponent} from './product/product-template/product-template.component';
 import {ProductListingComponent} from './product/product-listing/product-listing.component';
 import {DetailsComponent} from './product/details/details.component';
+import {CartComponent} from './product/cart/cart.component';
+import {LoginRegisterComponent} from './login-register/login-register.component';
+import {LoginComponent} from './login-register/login/login.component';
+import {RegisterComponent} from './login-register/register/register.component';
 
 import { ReactiveFormsModule } from '@angular/forms';
 var routes: Routes = [
@@ -28,11 +32,40 @@ var routes: Routes = [
             {
               path:"details/:productId",
               component:DetailsComponent
+            },
+            {
+              path:"cart",
+              component:CartComponent
             }
 
 
     ]
+  },
+  {
+    path:"cart",
+    component:ProductTemplateComponent,
+    children:[
+      {
+        path:"",
+        component:CartComponent
+      }
+    ]
+  },
+  {
+    path: "login",
+    component: LoginRegisterComponent,
+    children:[
+      {
+        path:"",
+        component:LoginComponent
+      },
+      {
+        path:"register",
+        component:RegisterComponent
+      }
+    ]
   }
+
   
 ];
  

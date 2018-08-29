@@ -1,0 +1,49 @@
+<div class="span12">					
+  <h4 class="title"><span class="text"><strong>Register</strong> Form</span></h4>
+  <form class="form-stacked" [formGroup]= "rForm" (ngSubmit)= "formSubmit(rForm.value)">
+    <fieldset>
+     
+      <div class="control-group">
+        <label class="control-label">Email address:</label>
+        <div class="controls">
+          <input type="text" placeholder="Enter your email" class="input-xlarge" name="userEmail" formControlName="userEmail">
+          <!-- <div class="alert alert-warning" *ngIf="rForm.controls['userEmail'].valid && rForm.controls['userEmail'].touched" ></div> -->
+          <div class="alert alert-danger" *ngIf="rForm.controls['userEmail'].hasError('email') && rForm.controls['userEmail'].touched">Provide a valid email.</div>
+          <div class="alert alert-danger" *ngIf="rForm.controls['userEmail'].hasError('required') && rForm.controls['userEmail'].touched">Please provide an email address</div>
+        </div>
+      </div>
+      <div class="control-group">
+        <label class="control-label">Password:</label>
+        <div class="controls">
+          <input type="password" placeholder="Enter your password" class="input-xlarge" name="password" formControlName="password">
+
+          <div class="alert alert-danger" *ngIf="rForm.controls['password'].hasError('required') && rForm.controls['password'].touched">Password Required.</div>
+          <div class="alert alert-danger" *ngIf="!rForm.controls['password'].hasError('required') && rForm.controls['password'].hasError('minlength') && rForm.controls['password'].touched">Password must be minimum 6 charecter long</div>
+          <div class="alert alert-danger" *ngIf="!rForm.controls['password'].hasError('required') && !rForm.controls['password'].hasError('minlength') && rForm.controls['password'].hasError('pattern') && rForm.controls['password'].touched">Only Character Are Allowed</div>
+
+        </div>
+      </div>
+      <div class="control-group">
+        <label class="control-label">Confirm Password:</label>
+        <div class="controls">
+          <input type="password" placeholder="Enter your password" class="input-xlarge" name="confirmPassword" formControlName="confirmPassword">
+
+          <div class="alert alert-danger" *ngIf="rForm.controls['confirmPassword'].hasError('required') && rForm.controls['confirmPassword'].touched">Confirm Password Required.</div>
+          <div class="alert alert-danger" *ngIf="!rForm.controls['confirmPassword'].hasError('required') && rForm.errors?.mismatch && (rForm.controls['confirmPassword'].dirty || rForm.controls['confirmPassword'].touched)">Password and Confirm Password Missmatch</div>
+          
+
+        </div>
+      </div>								                            
+      <div class="control-group">
+        <p>Now that we know who you are. I'm not a mistake! In a comic, you know how you can tell who the arch-villain's going to be?</p>
+      </div>
+      <hr>
+      <div class="actions">
+        <input tabindex="9" class="btn btn-inverse large" type="submit" value="Create your account" [disabled]="!rForm.valid">&nbsp;
+        <a routerLink = "/login">
+          <input tabindex="3" class="btn btn-inverse large" type="button" value="Sign In">
+        </a>
+      </div>
+    </fieldset>
+  </form>					
+</div>				
