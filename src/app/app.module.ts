@@ -24,6 +24,9 @@ import { LoginRegisterComponent } from './login-register/login-register.componen
 import { LoginComponent } from './login-register/login/login.component';
 import { RegisterComponent } from './login-register/register/register.component'
 
+import {RouterExtServiceService} from './router-ext-service.service';
+//import {LoginRegisterServiceService} from './login-register-service.service';
+import {LoginRegisterServiceService} from './login-register-service.service';
 
 @NgModule({
   declarations: [
@@ -53,7 +56,15 @@ import { RegisterComponent } from './login-register/register/register.component'
     FormsModule,
     ReactiveFormsModule
   ],
-  providers: [CookieService],
+  // exports:[LoginRegisterServiceService],
+  providers: [CookieService,RouterExtServiceService,LoginRegisterServiceService],
   bootstrap: [AppComponent,Header1Component]
 })
-export class AppModule { }
+export class AppModule { 
+
+  constructor(){
+
+    //console.log('approute',this.routerExtService.getPreviousUrl())
+
+  }
+}

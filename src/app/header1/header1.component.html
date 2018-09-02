@@ -8,10 +8,12 @@
     <div class="span8">
       <div class="account pull-right">
         <ul class="user-menu">				
-          <li><a href="#">My Account</a></li>
+          <li *ngIf="loginStatus"><a href="#">My Account</a></li>
           <li><a routerLink="cart">Your Cart</a></li>
           <li><a href="checkout.html">Checkout</a></li>					
-          <li><a routerLink="/login">Login</a></li>		
+          <li *ngIf="!loginStatus"><a routerLink="/login">Login</a></li>
+          <li *ngIf="loginStatus" (click)="LogOut()"><a href="javascript:void(0)" >LogOut</a></li>		
+          <!-- <li>{{loginLogout}}</li> -->
         </ul>
       </div>
     </div>

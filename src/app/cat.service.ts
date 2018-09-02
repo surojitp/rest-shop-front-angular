@@ -1,8 +1,15 @@
 import { Injectable } from '@angular/core';
-import {Http} from '@angular/http';
+
 import {Observable} from 'rxjs';
 import {cartProduct} from './interface/cartProduct';
 import {CookieService} from 'ngx-cookie-service';
+
+import {Http,Headers,RequestOptions,ResponseOptions} from '@angular/http';
+import { HttpClient, HttpHeaders,HttpErrorResponse } from '@angular/common/http';
+
+import { map,catchError } from "rxjs/operators";
+import { throwError } from 'rxjs';
+
 
 @Injectable({
   providedIn: 'root'
@@ -13,7 +20,12 @@ export class CatService {
   cart=[];
   total = 0;
 
+  loginData:any;
+
   constructor(private http:Http, private cookieService:CookieService) { 
+    
+    
+    this.loginData = (this.getCookie('userLogin')) ? JSON.parse(this.getCookie('userLogin')) : "";
     
   }
 
@@ -94,78 +106,187 @@ export class CatService {
 
   product_add_to_cart(product){
 
-    if(this.getCookie('cart')){
+    //console.log('aa',Object.keys(this.loginData).length)
 
-      var cart_array = JSON.parse(this.getCookie('cart'));
-      this.cart = cart_array;
-    }
+    if(Object.keys(this.loginData).length === 0){
 
-    if(this.getCookie('total')){
+      //console.log(1111111)
 
-      var cart_total = this.getCookie('total');
-      this.total = parseFloat(cart_total);
-    }
+          if(this.getCookie('cart')){
 
-    
-    // console.log(this.cart);
-    // return false;
-
-    if (this.cart.length === 0){
-      
-      //product.count = 1;
-      product.price = product.quantity * parseFloat(product.price);
-      //this.total += parseFloat(product.price);
-      this.cart.push(product);
-    
-    } else {
-      
-      var repeat = false;
-      
-      for(var i = 0; i< this.cart.length; i++){
-        
-        if(this.cart[i].id === product.id){
-
-          if(this.cart[i].color === product.color){
-
-            repeat = true;
-            //this.cart[i].count +=1;
-            this.cart[i].quantity += product.quantity
-            this.cart[i].price = this.cart[i].quantity * parseFloat(product.price)
-            //this.total += parseFloat(this.cart[i].price);
-
+            var cart_array = JSON.parse(this.getCookie('cart'));
+            this.cart = cart_array;
           }
+
+          if(this.getCookie('total')){
+
+            var cart_total = this.getCookie('total');
+            this.total = parseFloat(cart_total);
+          }
+
+          
+          // console.log(this.cart);
+          // return false;
+
+          if (this.cart.length === 0){
+            
+            //product.count = 1;
+            product.price = product.quantity * parseFloat(product.price);
+            //this.total += parseFloat(product.price);
+            this.cart.push(product);
+          
+          } else {
+            
+            var repeat = false;
+            
+            for(var i = 0; i< this.cart.length; i++){
+              
+              if(this.cart[i].id === product.id){
+
+                if(this.cart[i].color === product.color){
+
+                  repeat = true;
+                  //this.cart[i].count +=1;
+                  this.cart[i].quantity += product.quantity
+                  this.cart[i].price = this.cart[i].quantity * parseFloat(product.price)
+                  //this.total += parseFloat(this.cart[i].price);
+
+                }
+                
+                
+              }
+            }
+            if (!repeat) {
+              
+              //product.count = 1;
+              product.price = product.quantity * parseFloat(product.price)
+              this.cart.push(product);	
+            }
+          }
+
           
           
-        }
-      }
-      if (!repeat) {
-        
-        //product.count = 1;
-        product.price = product.quantity * parseFloat(product.price)
-        this.cart.push(product);	
-      }
+
+          this.total += parseFloat(product.price);
+
+          //console.log(JSON.stringify(this.cart));
+          //console.log(this.total);
+          
+          this.setCookie('cart',JSON.stringify(this.cart),1);
+          this.setCookie('total',this.total,1);
+
+          // this.deleteCookie('cart');
+          // this.deleteCookie('total');
+
+          // var res = this.cart.map( v=>{
+          //   return v.id
+          // })
+
+          // console.log(res);
+
+    }
+    else{
+
+      product['userId']= this.loginData.id;
+
+      product.price = product.quantity * parseFloat(product.unitPrice)
+
+      var pro_string = JSON.stringify(product);
+
+      //console.log('ppp',pro_string)
+
+      this.add_single_product_cart(pro_string,this.loginData.token).subscribe(
+                    res=> console.log(res),
+                    err=> console.log(err)
+                  );
+      
     }
 
+  
+  }
+
+  add_single_product_cart(pro_string,token):Observable<any>{
+    return this.product_add_to_cart_service(pro_string,token);
+  }
+
+  product_add_to_cart_when_login(){
+
+    console.log('a',this.loginData)
     
+    if(Object.keys(this.loginData).length !== 0){
+
+      console.log('cart',this.getCookie('cart'))
+
+      var cartCookie = (this.getCookie('cart')) ? JSON.parse(this.getCookie('cart')) : [];
+
+      if(cartCookie.length > 0){
+        /////////////////
+
+        for(var i =0; i< cartCookie.length ; i++){
+          cartCookie[i]['userId']= this.loginData.id;
+
+          let product_data = JSON.stringify(cartCookie[i]);
+          console.log('cart loop'+i ,product_data);
+
+          this.product_add_to_cart_service(product_data,this.loginData.token)
+                                          .subscribe(
+                                            res=> console.log(res),
+                                            err=> console.log(err)
+                                          );
+          
+            
+                          
+        }
+
+        
+        //////////////
+           
+      }
+      console.log("when login",1);
+    }
+    else{
+      console.log("when login",0);
+    }
+
+  }
+
+  product_add_to_cart_service(product_data,token):Observable<any>{
+
+    // console.log('product service',product_data)
+    // console.log('token',token)
+
+    const headers = new Headers({'Content-Type': 'application/json','Authorization': 'Barer '+ token});
+    //headers.append('Authorization', 'Barer '+data.token)
+    const options = new RequestOptions({ headers: headers });
+
+    var url = 'http://localhost:3000/cart';
+
     
+    return this.http.post(url,product_data, options)
+                    .pipe(
+                      map((response: any) => response.json()),
+                      //catchError((e: any) => Observable.throw(this.errorHandler(e)))
+                      catchError(this.handleError('add cart',url))
+                    )
+  }
 
-    this.total += parseFloat(product.price);
+  get_data_from_cart_service(){
 
-    console.log(JSON.stringify(this.cart));
-    console.log(this.total);
+    console.log(this.loginData.id)
+
+    const headers = new Headers({'Content-Type': 'application/json','Authorization': 'Barer '+ this.loginData.token});
+    //headers.append('Authorization', 'Barer '+data.token)
+    const options = new RequestOptions({ headers: headers });
+
+    var url = `http://localhost:3000/cart/${this.loginData.id}`;
+
     
-    this.setCookie('cart',JSON.stringify(this.cart),1);
-    this.setCookie('total',this.total,1);
-
-    // this.deleteCookie('cart');
-    // this.deleteCookie('total');
-
-    // var res = this.cart.map( v=>{
-    //   return v.id
-    // })
-
-    // console.log(res);
-
+    return this.http.get(url, options)
+                    .pipe(
+                      map((response: any) => response.json()),
+                      //catchError((e: any) => Observable.throw(this.errorHandler(e)))
+                      catchError(this.handleError('get cart',url))
+                    )
   }
 
   removeItemCart = function(product){
@@ -251,4 +372,20 @@ export class CatService {
       }
       return "";
   }
+
+  private handleError(operation: String,url=null) {
+      return (err: any) => {
+          let errMsg = `error in ${operation}() retrieving ${url}`;
+          //console.log(`${errMsg}:`, err)
+          if(err instanceof HttpErrorResponse) {
+              // you could extract more info about the error if you want, e.g.:
+              console.log(`status: ${err.status}, ${err.statusText}`);
+              // errMsg = ...
+          }
+          //return Observable.throw(errMsg);
+          return throwError(errMsg);
+      }
+  }
+
+  
 }
