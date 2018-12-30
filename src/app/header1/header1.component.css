@@ -1,0 +1,13 @@
+.cart {
+  text-align: center;
+  border-radius: 50%;
+  width: 18px;
+  /* height: 18px; */
+  background-color: #ff6161;
+  border: 1px solid #8a7d81;
+  font-weight: 400;
+  color: #f0f0f0;
+  line-height: 16px;
+  font-size: 12px;
+  padding: 3px 6px 3px 6px;
+}

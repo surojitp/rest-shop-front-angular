@@ -5,14 +5,14 @@ $(function () {
       $(this).tab('show');
     })
   })
-  $(document).ready(function() {
-      //alert()
-    $('.thumbnail').fancybox({
-      openEffect  : 'none',
-      closeEffect : 'none'
-    });
+  // $(document).ready(function() {
+  //     //alert()
+  //   $('.thumbnails').fancybox({
+  //     openEffect  : 'none',
+  //     closeEffect : 'none'
+  //   });
     
-    $('#myCarousel-2').carousel({
-                interval: 2500
-    });								
-  });
+  //   $('#myCarousel-2').carousel({
+  //               interval: 2500
+  //   });								
+  // });

@@ -1,9 +1,10 @@
-
 <section class="navbar main-menu">
-  <div class="navbar-inner main-menu">				
-    <a href="index.html" class="logo pull-left"><img src="assets/themes/images/logo.png" class="site_logo" alt=""></a>
+  <div class="navbar-inner main-menu">
+    <a href="index.html" class="logo pull-left">
+      <img src="assets/themes/images/logo.png" class="site_logo" alt="">
+    </a>
     <nav id="menu" class="pull-right">
-        <!-- <ul>
+      <!-- <ul>
             <li><a href="#">Home</a></li>
             <li><a href="#">About</a></li>
             <li>
@@ -37,14 +38,22 @@
         <li><a href="./products.html">Top Seller</a></li>
       </ul> -->
       <ul>
-        <li><a routerLink='' onClick="flex_slider()">Home</a></li>
-        <li *ngFor='let c of categorys'><a [routerLink]='["/product",c.category._id]' >{{c.category.name}}</a>
-            <ul *ngIf="c.sub_cat.length != 0" class="dropdown">
-              <li *ngFor = "let sc of c.sub_cat"><a [routerLink] = '["/product/sub",sc._id]'>{{sc.name}}</a></li>
-            </ul>
+        <li>
+          <a routerLink='' onClick="flex_slider()">Home</a>
         </li>
-       
+        <li *ngFor='let c of categorys'>
+          <a [routerLink]='["/product",c.category._id]'>{{c.category.name}}</a>
+          <ul *ngIf="c.sub_cat.length != 0" class="dropdown">
+            <li *ngFor="let sc of c.sub_cat">
+              <a [routerLink]='["/product/sub",sc._id]'>{{sc.name}}</a>
+            </li>
+          </ul>
+        </li>
+
       </ul>
     </nav>
   </div>
 </section>
+<script>
+
+</script>

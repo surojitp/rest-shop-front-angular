@@ -1,7 +1,7 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import {HttpModule} from '@angular/http';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { AppComponent } from './app.component';
 import { Header1Component } from './header1/header1.component';
 import { Header2Component } from './header2/header2.component';
@@ -27,6 +27,10 @@ import { RegisterComponent } from './login-register/register/register.component'
 import {RouterExtServiceService} from './router-ext-service.service';
 //import {LoginRegisterServiceService} from './login-register-service.service';
 import {LoginRegisterServiceService} from './login-register-service.service';
+import {CatService} from './cat.service';
+import {Interceptor} from './Interceptor';
+import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
+
 
 @NgModule({
   declarations: [
@@ -46,7 +50,8 @@ import {LoginRegisterServiceService} from './login-register-service.service';
     CartComponent,
     LoginRegisterComponent,
     LoginComponent,
-    RegisterComponent
+    RegisterComponent,
+    PageNotFoundComponent
   ],
   imports: [
     BrowserModule,
@@ -57,10 +62,16 @@ import {LoginRegisterServiceService} from './login-register-service.service';
     ReactiveFormsModule
   ],
   // exports:[LoginRegisterServiceService],
-  providers: [CookieService,RouterExtServiceService,LoginRegisterServiceService],
+  providers: [
+    { provide: HTTP_INTERCEPTORS, useClass: Interceptor, multi: true } ,
+    CookieService,RouterExtServiceService,LoginRegisterServiceService,CatService 
+    
+             ],
   bootstrap: [AppComponent,Header1Component]
 })
 export class AppModule { 
+
+  
 
   constructor(){
 

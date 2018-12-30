@@ -11,6 +11,7 @@ import {CartComponent} from './product/cart/cart.component';
 import {LoginRegisterComponent} from './login-register/login-register.component';
 import {LoginComponent} from './login-register/login/login.component';
 import {RegisterComponent} from './login-register/register/register.component';
+import {PageNotFoundComponent} from './page-not-found/page-not-found.component';
 
 import { ReactiveFormsModule } from '@angular/forms';
 var routes: Routes = [
@@ -64,7 +65,8 @@ var routes: Routes = [
         component:RegisterComponent
       }
     ]
-  }
+  },
+  {path: "**", component: PageNotFoundComponent}
 
   
 ];

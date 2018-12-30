@@ -1,30 +1,36 @@
-<div class="span12">					
+<div id="overlay" style="text-align: center; vertical-align: center;" *ngIf="loader">
+  <img class="centered" src="assets/img/loader.gif" alt="">
+</div>
+<div class="span12">
   <h4 class="title"><span class="text"><strong>Login</strong> Form</span></h4>
-  
-  <form [formGroup]='rForm' (ngSubmit)= "formSubmit(rForm.value)">
+
+  <form [formGroup]='rForm' (ngSubmit)="formSubmit(rForm.value)">
     <input type="hidden" name="next" value="/">
     <fieldset>
       <div class="control-group">
         <label class="control-label">Email</label>
         <div class="controls">
-          <input type="text" placeholder="Enter your email" id="userEmail" formControlName="userEmail" name="userEmail" class="input-xlarge">
+          <input type="text" placeholder="Enter your email" id="userEmail" formControlName="userEmail" name="userEmail"
+            class="input-xlarge">
         </div>
       </div>
       <div class="control-group">
         <label class="control-label">Password</label>
         <div class="controls">
-          <input type="password" placeholder="Enter your password" id="password" name="password" formControlName="password" class="input-xlarge">
+          <input type="password" placeholder="Enter your password" id="password" name="password" formControlName="password"
+            class="input-xlarge">
         </div>
       </div>
       <div class="control-group">
         <input tabindex="3" class="btn btn-inverse large" [disabled]="!rForm.valid" type="submit" value="Sign into your account">&nbsp;
-        <a routerLink = "/login/register">
+        <a routerLink="/login/register">
           <input tabindex="3" class="btn btn-inverse large" type="button" value="Sign Up">
         </a>
         <hr>
-        <p class="reset">Recover your <a tabindex="4" href="#" title="Recover your username or password">username or password</a></p>
+        <p class="reset">Recover your <a tabindex="4" href="#" title="Recover your username or password">username or
+            password</a></p>
       </div>
       <div [class]="cls" *ngIf="msg">{{msg}}</div>
     </fieldset>
-  </form>				
+  </form>
 </div>

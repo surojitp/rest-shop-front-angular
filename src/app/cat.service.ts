@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable,OnInit,EventEmitter,Output } from '@angular/core';
 
 import {Observable} from 'rxjs';
 import {cartProduct} from './interface/cartProduct';
@@ -14,7 +14,7 @@ import { throwError } from 'rxjs';
 @Injectable({
   providedIn: 'root'
 })
-export class CatService {
+export class CatService implements OnInit {
 
   cartProductObj:cartProduct;
   cart=[];
@@ -22,22 +22,43 @@ export class CatService {
 
   loginData:any;
 
+  @Output() hideHeader1: EventEmitter<any> = new EventEmitter();
+
+  @Output() cartProductCount: EventEmitter<any> = new EventEmitter();
+
   constructor(private http:Http, private cookieService:CookieService) { 
     
+    this.set_login_data()
     
+    
+  }
+
+  headerTrue(){
+    this.hideHeader1.emit(true)
+  }
+  headerFalse(){
+    this.hideHeader1.emit(false)
+  }
+
+  set_login_data(){
     this.loginData = (this.getCookie('userLogin')) ? JSON.parse(this.getCookie('userLogin')) : "";
+  }
+  
+  ngOnInit(){
     
   }
 
   get_category():Observable<any>{
-    let url = 'http://localhost:3000/category';
+    console.log('interface');
+    
+    let url = 'https://shopbackend.herokuapp.com/category';
 
     return this.http.get(url);
   }
 
   get_category_with_sub_category():Observable<any>{
 
-    let url = 'http://localhost:3000/category/categryWithSub';
+    let url = 'https://shopbackend.herokuapp.com/category/categryWithSub';
 
     return this.http.get(url);
 
@@ -45,20 +66,20 @@ export class CatService {
 
   get_product_by_category_id(categoryId):Observable<any>{
 
-    let url = 'http://localhost:3000/products/byCategory/'+categoryId;
+    let url = 'https://shopbackend.herokuapp.com/products/byCategory/'+categoryId;
 
     return this.http.get(url);
 
   }
 
   get_product_by_subCategory(subCategoryId):Observable<any>{
-    let url = 'http://localhost:3000/products/bySubCategory/'+subCategoryId;
+    let url = 'https://shopbackend.herokuapp.com/products/bySubCategory/'+subCategoryId;
 
     return this.http.get(url);
   }
 
   get_product_details(productId):Observable<any>{
-    let url = `http://localhost:3000/products/${productId}`;
+    let url = `https://shopbackend.herokuapp.com/products/${productId}`;
     return this.http.get(url);
   }
 
@@ -104,13 +125,44 @@ export class CatService {
   //   console.log('cart',this.cartProduct)
   // }
 
+  // cartCount(val?){
+  //   let c;
+  //   if(Object.keys(this.loginData).length === 0){
+  //     if(this.getCookie('cart')){
+  //       let cartParse = JSON.parse(this.getCookie('cart'))
+  //       this.cartProductCount.emit(cartParse.length)
+  //     }
+      
+      
+  //   }
+  //   else{
+      
+  //     if(val && val !== '0'){
+  //       this.cartProductCount.emit(val)
+        
+  //     }
+      
+  //   }
+  //   //this.cartProductCount.emit(cartPro)
+  // }
+
+  cartProductCountOnInit(){
+    if(Object.keys(this.loginData).length === 0){
+      if(this.getCookie('cart')){
+        this.cartProductCount.emit(JSON.parse(this.getCookie('cart')).length);
+      }
+      
+    }
+
+  }
+
   product_add_to_cart(product){
 
     //console.log('aa',Object.keys(this.loginData).length)
 
     if(Object.keys(this.loginData).length === 0){
 
-      //console.log(1111111)
+      console.log(1111111)
 
           if(this.getCookie('cart')){
 
@@ -169,8 +221,10 @@ export class CatService {
 
           this.total += parseFloat(product.price);
 
-          //console.log(JSON.stringify(this.cart));
-          //console.log(this.total);
+          console.log('cart '+JSON.stringify(this.cart));
+          console.log(this.cart.length);
+
+          this.cartProductCount.emit(this.cart.length);
           
           this.setCookie('cart',JSON.stringify(this.cart),1);
           this.setCookie('total',this.total,1);
@@ -187,6 +241,8 @@ export class CatService {
     }
     else{
 
+      console.log(22222)
+
       product['userId']= this.loginData.id;
 
       product.price = product.quantity * parseFloat(product.unitPrice)
@@ -202,7 +258,7 @@ export class CatService {
       
     }
 
-  
+    return true;
   }
 
   add_single_product_cart(pro_string,token):Observable<any>{
@@ -210,6 +266,8 @@ export class CatService {
   }
 
   product_add_to_cart_when_login(){
+
+    this.set_login_data();
 
     console.log('a',this.loginData)
     
@@ -242,6 +300,8 @@ export class CatService {
         //////////////
            
       }
+
+      this.deleteCookie('cart');
       console.log("when login",1);
     }
     else{
@@ -253,18 +313,21 @@ export class CatService {
   product_add_to_cart_service(product_data,token):Observable<any>{
 
     // console.log('product service',product_data)
-    // console.log('token',token)
+     console.log('token',token)
 
     const headers = new Headers({'Content-Type': 'application/json','Authorization': 'Barer '+ token});
-    //headers.append('Authorization', 'Barer '+data.token)
+    //headers.append('Authorization', 'Barer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InN1Ymhhc2hAZ21haWwuY29tIiwidXNlcklkIjoiNWI4YmVlMjNhOTVlMTUyMmY0MmU1NzM1IiwiaWF0IjoxNTM2MTU4MjQwLCJleHAiOjE1MzYxNjE4NDB9.SKTJTqGg2YyH9uSy6BawMGzPR1hJXV1PBezDaahmKPU')
     const options = new RequestOptions({ headers: headers });
 
-    var url = 'http://localhost:3000/cart';
+    var url = 'https://shopbackend.herokuapp.com/cart';
 
     
-    return this.http.post(url,product_data, options)
+    return this.http.post(url,product_data,options)
                     .pipe(
-                      map((response: any) => response.json()),
+                      map((response: any) => {
+                        this.get_data_from_cart_service()
+                        return response.json()
+                      }),
                       //catchError((e: any) => Observable.throw(this.errorHandler(e)))
                       catchError(this.handleError('add cart',url))
                     )
@@ -272,24 +335,36 @@ export class CatService {
 
   get_data_from_cart_service(){
 
-    console.log(this.loginData.id)
+    console.log("get data",this.loginData.id)
 
     const headers = new Headers({'Content-Type': 'application/json','Authorization': 'Barer '+ this.loginData.token});
     //headers.append('Authorization', 'Barer '+data.token)
     const options = new RequestOptions({ headers: headers });
 
-    var url = `http://localhost:3000/cart/${this.loginData.id}`;
+    var url = `https://shopbackend.herokuapp.com/cart/${this.loginData.id}`;
 
     
-    return this.http.get(url, options)
+    return this.http.get(url)
                     .pipe(
-                      map((response: any) => response.json()),
+                      map((response: any) => {
+                        //console.log("dd"+response.json().count);
+                        //this.cartCount(response.json().count)
+                        if (response.json() == null) {
+                          this.cartProductCount.emit(0)
+                        }else{
+                          this.cartProductCount.emit(response.json().count)
+                        }
+                        
+                        return response.json()
+                      }),
                       //catchError((e: any) => Observable.throw(this.errorHandler(e)))
                       catchError(this.handleError('get cart',url))
                     )
   }
 
-  removeItemCart = function(product){
+  removeItemCart(product) {
+
+    
 
     // this.deleteCookie('cart');
     // this.deleteCookie('total');
@@ -298,9 +373,9 @@ export class CatService {
     console.log('count',product.quantity);
     
    
-    var cart_array = JSON.parse(this.getCookie('cart'))
+    var cart_array: any = JSON.parse(this.getCookie('cart'))
 
-    this.total = this.getCookie('total');
+    this.total = JSON.parse(this.getCookie('total'));
     console.log('cartttt',this.total)
     //var index = cart_array.indexOf(product);
 
@@ -341,8 +416,31 @@ export class CatService {
     
     //this.total -= parseFloat(product.price);
     this.setCookie('total',this.total,1);
+
+    this.cartProductCount.emit(cart_array.length);
     
-  };
+    
+  }
+
+  remove_cart_service(product_id){
+
+    // console.log('product service',product_data)
+    // console.log('token',token)
+
+    const headers = new Headers({'Content-Type': 'application/json','Authorization': 'Barer '+ this.loginData.token});
+    //headers.append('Authorization', 'Barer '+data.token)
+    const options = new RequestOptions({ headers: headers });
+
+    var url = 'https://shopbackend.herokuapp.com/cart/'+product_id;
+
+    
+    return this.http.delete(url,options)
+                    .pipe(
+                      map((response: any) => response.json()),
+                      //catchError((e: any) => Observable.throw(this.errorHandler(e)))
+                      catchError(this.handleError('delete cart',url))
+                    )
+  }
 
   setCookie(cname, cvalue, exdays) {
       var d = new Date();

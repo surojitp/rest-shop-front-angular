@@ -12,6 +12,10 @@ export class RegisterComponent implements OnInit {
   rForm: FormGroup;
   userEmail: String;
   password: String;
+  msg;
+  cls;
+
+  //loader: boolean = false;
 
   constructor(private fb: FormBuilder, private lr: LoginRegisterServiceService) { 
     
@@ -51,24 +55,53 @@ export class RegisterComponent implements OnInit {
 
   formSubmit(post){
     console.log('post',post)
-
+    //this.loader = true;
     let data = {
       "email": post.userEmail,
       "password": post.password
     }
 
     this.lr.register_service(data).subscribe( d =>{
+      
 
       //var body = d._body
+      
+      console.log('d');
+      console.log(d);
+      
 
-
-      if(d && d.message == "User created"){
-        alert("Register Successfully")
+      if(d && d === 1){
+        this.msg = "Register Successfully";
+        this.cls = "alert alert-success";
         window.location.href = './login';
+      }
+      else if(d && d === 2){
+        this.msg = "Email already use";
+        this.cls = "alert alert-danger";
+      }
+      else if(d && d === 3){
+        this.msg = "Woops!! Something went wrong.Please try again later!! ";
+        this.cls = "alert alert-danger";
       }
       
       console.log('res',d)
-    });
+    },
+    err=>{
+      console.log(err.status);
+
+      let error_body = JSON.parse(err._body)
+      
+      
+      if(err.status === 409){
+        this.msg = error_body.message;
+        this.cls = "alert alert-danger";
+
+        console.log("msg"+ this.msg);
+        
+      }
+      
+    }
+  );
    
   }
 

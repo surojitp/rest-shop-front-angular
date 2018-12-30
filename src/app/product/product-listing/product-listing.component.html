@@ -1,29 +1,50 @@
-<div class="span9">	
-  						
-  <ul *ngIf= "productData.length !== '0'" class="thumbnails listing-products">
-    
-    <li *ngFor="let product of productData" class="span3">
-      <div class="product-box">
-        <span class="sale_tag"></span>												
-        <a [routerLink]='["/product/details",product.id]'><img alt="" src="http://localhost:3000/{{product.productImage}}"></a><br/>
-        <a routerLink="product/details/{{product._id}}" class="title">{{product.name}}{{product.id}}</a><br/>
-        <a href="#" class="category">Phasellus consequat</a>
-        <p class="price">${{product.price}}</p>
-      </div>
-    </li>       
-    
-  </ul>								
-  <hr>
-  <div class="pagination pagination-small pagination-centered">
-    <ul>
-      <li><a href="#">Prev</a></li>
-      <li class="active"><a href="#">1</a></li>
-      <li><a href="#">2</a></li>
-      <li><a href="#">3</a></li>
-      <li><a href="#">4</a></li>
-      <li><a href="#">Next</a></li>
+<div class="span9">
+  <div *ngIf="productData.length === 0"><img src="assets/img/no-product.png" alt=""></div>
+  <ng-container *ngIf="productData.length !== 0">
+
+    <ul *ngIf="productData.length !== 0" class="thumbnails listing-products">
+
+      <li *ngFor="let product of productData" class="span3">
+        <div class="product-box">
+          <span class="sale_tag"></span>
+          <a [routerLink]='["/product/details",product.id]'>
+            <img alt="" src="https://shopbackend.herokuapp.com/{{product.productImage}}">
+          </a>
+          <br />
+          <a routerLink="product/details/{{product._id}}" class="title">{{product.name}}{{product.id}}</a>
+          <br />
+          <a href="#" class="category">Phasellus consequat</a>
+          <p class="price">${{product.price}}</p>
+        </div>
+      </li>
+
     </ul>
-  </div>
+    <hr>
+    <div class="pagination pagination-small pagination-centered">
+      <ul>
+        <li>
+          <a href="#">Prev</a>
+        </li>
+        <li class="active">
+          <a href="#">1</a>
+        </li>
+        <li>
+          <a href="#">2</a>
+        </li>
+        <li>
+          <a href="#">3</a>
+        </li>
+        <li>
+          <a href="#">4</a>
+        </li>
+        <li>
+          <a href="#">Next</a>
+        </li>
+      </ul>
+    </div>
+
+  </ng-container>
+
 </div>
 
 <app-product-right-side></app-product-right-side>

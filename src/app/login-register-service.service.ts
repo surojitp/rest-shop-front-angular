@@ -33,10 +33,15 @@ export class LoginRegisterServiceService {
 
   login_service(data):Observable<any>{
 
-    const headers = new Headers({'Content-Type': 'application/json' });
+    const headers = new Headers({
+                                "Access-Control-Allow-Origin": "*",
+                                'Access-Control-Allow-Headers': "*",
+                                "Access-Control-Allow-Methods": "GET, POST, DELETE, PUT",
+                                'Content-Type': 'application/json' 
+                              });
     const options = new RequestOptions({ headers: headers });
 
-    var url = 'http://localhost:3000/user/login';
+    var url = 'https://shopbackend.herokuapp.com/user/login';
 
     return this.http.post(url,data,
                             new ResponseOptions({
@@ -47,6 +52,15 @@ export class LoginRegisterServiceService {
                             map((response: any) => {
 
                               if(response){
+                                
+                                
+                                let userLoginData = {
+                                  "id": response.json().userId,   
+                                  "email": response.json().email,
+                                  "token": response.json().token
+                                }
+                                
+                                this.cs.setCookie('userLogin',JSON.stringify(userLoginData),1);
                                 
                                 this.loginLogoutChange.emit('<a href="#" (click)="LogOut()">LogOut</a>');
                                 this.loginStatus.emit(true);
@@ -63,33 +77,79 @@ export class LoginRegisterServiceService {
   }
 
   logout_service(){
+    this.cs.setCookie('userLogin',"",1);
     this.cs.deleteCookie('userLogin');
     this.loginStatus.emit(false);
+    this.cs.set_login_data();
   }
 
   register_service(data):Observable<any>{
 
-    const headers = new Headers({'Content-Type': 'application/json' });
+    const headers = new Headers({
+                                "Access-Control-Allow-Origin": "*",
+                                'Access-Control-Allow-Headers': "*",
+                                "Access-Control-Allow-Methods": "GET, POST, DELETE, PUT",
+                                'Content-Type': 'application/json' 
+                              });
     const options = new RequestOptions({ headers: headers });
 
     // let formdata = new FormData();
     // formdata.append('email', data.email);
     // formdata.append('password', data.password);
 
-    var url = 'http://localhost:3000/user/signup';
+    var url = 'https://shopbackend.herokuapp.com/user/signup';
 
-    return this.http.post(url,data,
-                      new ResponseOptions({
-                        headers: headers
-                      })
+    return this.http.post(url,data
+                      // ,
+                      // new ResponseOptions({
+                      //   headers: headers
+                      // })
                     )
                     .pipe(
-                      map((response: any) => response.json()),
+                      map((response: any) => {
+                        console.log(response);
+                        
+                        let registerStatus: number;
+                        let res = response.json();
+
+                        if(res.message === "User created"){
+                          registerStatus = 1;
+                        }
+                        else if(res.message === "Email already use"){
+                          registerStatus = 2;
+                        }
+                        else{
+                          registerStatus = 3;
+                        }
+                        
+                        return registerStatus;
+                      }),
                       //catchError((e: any) => Observable.throw(this.errorHandler(e)))
-                      catchError(this.handleError('regiuster',url))
+                      //catchError(this.handleError('regiuster',url))
+                      catchError(this.handleError2)
                     )
                     //.map((response: any) => response.json())
                     //.catch ((e: any) => Observable.throw(this.errorHandler(e)));
+
+                    // return this.http.post(url,data,options);
+                    //   //                 )
+  }
+
+
+  handleError2(error) {
+    
+    console.log("eeee"+error);
+    
+    let errorMessage = '';
+    if (error.error instanceof ErrorEvent) {
+      // client-side error
+      errorMessage = `Error: ${error.error.message}`;
+    } else {
+      // server-side error
+      errorMessage = `ErrorCode: ${error.status}\nMessage: ${error.message}`;
+    }
+    //window.alert(errorMessage);
+    return throwError(error);
   }
     /**
    * Handle Http operation that failed.
@@ -133,11 +193,18 @@ export class LoginRegisterServiceService {
 
   order(data){
     console.log('ddddd',data.token)
-    const headers = new Headers({'Content-Type': 'application/json','Authorization': 'Barer '+data.token});
+    const headers = new Headers({
+      "Access-Control-Allow-Origin": "*",
+      'Access-Control-Allow-Headers': "*",
+      "Access-Control-Allow-Methods": "GET, POST, DELETE, PUT",
+      'Content-Type': 'application/json',
+      'Authorization': 'Barer '+data.token,
+
+    });
     //headers.append('Authorization', 'Barer '+data.token)
     const options = new RequestOptions({ headers: headers });
 
-    var url = 'http://localhost:3000/orders';
+    var url = 'https://shopbackend.herokuapp.com/orders';
 
     console.log('header',headers);
 

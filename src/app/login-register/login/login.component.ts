@@ -1,3 +1,4 @@
+import { async } from '@angular/core/testing';
 import { Component, OnInit } from '@angular/core';
 import {FormGroup,FormBuilder,Validators} from '@angular/forms';
 import {LoginRegisterServiceService} from '../../login-register-service.service';
@@ -23,6 +24,8 @@ export class LoginComponent implements OnInit {
   msg;
   cls;
   previousRoute: string;
+
+  loader: boolean = false;
   
 
 
@@ -64,22 +67,17 @@ export class LoginComponent implements OnInit {
       "password": post.password
     }
 
-    this.lr.login_service(data).subscribe((d)=>{
+    this.lr.login_service(data).subscribe(async (d)=>{
       if(d){
         this.msg = "Login Successfully";
         this.cls = "alert alert-success";
-        let userLoginData = {
-          "id": d.userId,   
-          "email": post.userEmail,
-          "token": d.token
-        }
-        this.cs.setCookie('userLogin',JSON.stringify(userLoginData),1);
-
-        //this.cs.product_add_to_cart_when_login();
-
-        this.cs.product_add_to_cart_when_login();
-
-        this.router.navigate([this.previousRoute]);
+       
+        await this.cs.product_add_to_cart_when_login();
+        this.loader = true;
+        setTimeout(()=>{ 
+          this.router.navigate([this.previousRoute]);
+        }, 3000);
+        
       }
     },(err)=>{
       console.log('error',err)

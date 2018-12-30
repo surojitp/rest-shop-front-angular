@@ -23,14 +23,16 @@ export class DetailsComponent implements OnInit {
   routeSub;
   productId;
 
-  productDetails = [];
+  productDetails:any = [];
   color = "";
 
   cartProductObj:cartProduct;
 
   cookieValue = 'UNKNOWN';
 
-  constructor(private cats: CatService, private activateRoute: ActivatedRoute,private cookieService: CookieService) { }
+  cartBtn: boolean=true;
+
+  constructor(private cats: CatService, private activateRoute: ActivatedRoute,private cookieService: CookieService, public router: Router) { }
 
   ngOnInit() {
     
@@ -76,7 +78,9 @@ export class DetailsComponent implements OnInit {
     })
   }
 
-  add_to_cart(qty,proId,sColor,price,image,name){
+  async add_to_cart(qty,proId,sColor,price,image,name){
+
+    
     //alert(qty)
     //alert(proId)
     //alert(sColor)
@@ -85,7 +89,7 @@ export class DetailsComponent implements OnInit {
       alert("Choose color");
       return false;
     }
-
+    this.cartBtn = false;
     //console.log("bbbbb",this.cats.cartProduct)
 
     this.cartProductObj = {
@@ -100,10 +104,21 @@ export class DetailsComponent implements OnInit {
 
     
 
-    this.cats.product_add_to_cart(this.cartProductObj);
+    await this.cats.product_add_to_cart(this.cartProductObj);
+
+    setTimeout(()=>{ 
+      this.router.navigate(['cart'])
+        }, 3000);
 
     
   }
+
+  // redirect(){
+  //   setTimeout(function(){ 
+  //     var a:any = Router;
+  //     a.router.navigate(['cart'])
+  //   }, 3000);
+  // }
 
 }
 
